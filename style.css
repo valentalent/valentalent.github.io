@@ -1,13 +1,13 @@
 body{
     margin: 0;
     overflow: hidden;
-    background: rgb(55,100,144);
+    background: rgb(55, 101, 144);
 }
 
 img{
-    width: 40%;
+    width: 25%;
     position: fixed;
-    top: 50%;
+    top: 11%;
     left: 50%;
     transform: translate(-50%, -50%);
 }

@@ -1,26 +1,61 @@
 let virus;
+var cnv;
 const viruses = [];
 
 function preload() {
     virus = loadImage('virus.png');
 }
 
-function setup() {
+/*function setup() {
     createCanvas(window.innerWidth, window.innerHeight);
     const virusesLength = Math.floor(window.innerWidth / 10);
     for (let i = 0; i < virusesLength; i++) {
         viruses.push(new Virus());
         
     }
+  }*/
+function centerCanvas() {
+  var x = (windowWidth - width) / 2;
+  var y = (windowHeight - height) / 2;
+  cnv.position(x, y+75);
+}
+
+function setup() {
+  cnv = createCanvas(window.innerWidth, (window.innerHeight/1.1)-75);
+  centerCanvas();
+  const virusesLength = Math.floor(window.innerWidth / 12);
+    for (let i = 0; i < virusesLength; i++) {
+        viruses.push(new Virus());
+}
+}
+
+function windowResized() {
+  centerCanvas();
+}
+
+function mousePressed() {
+    for (let i = viruses.length - 1; i >= 0; i--) {
+      if (viruses[i].spliceViruses(mouseX, mouseY)) {
+        viruses.splice(i, 1);
+      }
+    }
   }
 
 function draw() {
-    background(55, 100, 144);
+    background(55, 101, 144);
     viruses.forEach((v, index) => {
         v.update();
         v.draw_virus();
-        v.checkViruses(viruses.slice(index))
+        v.checkViruses(viruses.slice(index));
     });
+
+    //Restarting the game
+    if(viruses.length==0){
+        const virusesLength = Math.floor(window.innerWidth / 12);
+        for (let i = 0; i < virusesLength; i++) {
+            viruses.push(new Virus());
+    }
+    }
     
 }
 
@@ -30,8 +65,6 @@ class Virus {
         this.pos = createVector(random(width), random(height));
         //Velocity
         this.vel = createVector(random(-8,8), random(-3,3));
-        //Size
-        this.size = 10;
     }
 
     // Update movement by adding velocity
@@ -48,10 +81,10 @@ class Virus {
 
     //Detect edges
     edges() {
-        if ( this.pos.x < 0 || this.pos.x > width) {
+        if ( this.pos.x < 0 || this.pos.x+11 > width) {
             this.vel.x*=-1;
         }
-        if ( this.pos.y < 0 || this.pos.y > height) {
+        if ( this.pos.y < 0 || this.pos.y+15 > height) {
             this.vel.y*=-1;
         }
     }
@@ -67,5 +100,15 @@ class Virus {
             }
         });
     }
+
+    //For removing clicked virus
+    spliceViruses(posx, posy) {
+            let d = dist(posx, posy, this.pos.x, this.pos.y);
+            if (d < 25) {
+              return true;
+            } else {
+              return false;
+            }
+    }  
 
 }
