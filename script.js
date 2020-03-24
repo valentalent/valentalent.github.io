@@ -64,7 +64,7 @@ class Virus {
         //Position
         this.pos = createVector(random(width), random(height));
         //Velocity
-        this.vel = createVector(random(-8,8), random(-3,3));
+        this.vel = createVector(random(-5,5), random(-2.5,2.5));
     }
 
     // Update movement by adding velocity
@@ -103,8 +103,8 @@ class Virus {
 
     //For removing clicked virus
     spliceViruses(posx, posy) {
-            let d = dist(posx, posy, this.pos.x, this.pos.y);
-            if (d < 25) {
+            let d = dist(posx-10, posy-10, this.pos.x, this.pos.y);
+            if (d < 15) {
               return true;
             } else {
               return false;
