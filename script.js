@@ -1,9 +1,13 @@
 let virus;
+let pill;
 var cnv;
-const viruses = [];
+let viruses = [];
+let pills = [];
+const virusesLength = Math.floor(window.innerWidth / 12);
 
 function preload() {
     virus = loadImage('virus.png');
+    pill = loadImage('pill.png');
 }
 
 /*function setup() {
@@ -21,12 +25,18 @@ function centerCanvas() {
 }
 
 function setup() {
-  cnv = createCanvas(window.innerWidth, (window.innerHeight/1.1)-75);
+  cnv = createCanvas(window.innerWidth, window.innerHeight/1.2);
   centerCanvas();
-  const virusesLength = Math.floor(window.innerWidth / 12);
+ 
     for (let i = 0; i < virusesLength; i++) {
         viruses.push(new Virus());
-}
+
+    }
+  const pillsLength = Math.floor(window.innerWidth / 120);
+    for (let i = 0; i < pillsLength; i++) {
+        pills.push(new Pill());
+    }
+
 }
 
 function windowResized() {
@@ -39,6 +49,15 @@ function mousePressed() {
         viruses.splice(i, 1);
       }
     }
+
+    for (let i = pills.length - 1; i >= 0; i--) {
+      if (pills[i].spliceViruses(mouseX, mouseY)) {
+        pills.splice(i, 1)
+        for (let i = 0; i < (viruses.length/10); i++) {
+            viruses.push(new Virus(createVector(mouseX,mouseY)));
+        }
+      }
+    }
   }
 
 function draw() {
@@ -49,15 +68,42 @@ function draw() {
         v.checkViruses(viruses.slice(index));
     });
 
+    pills.forEach((p, index) => {
+        p.update();
+        p.draw_virus();
+    });
+
     //Restarting the game
     if(viruses.length==0){
+        alert("Congrats!\nYou destroyed COVID-19 :)\nPress OK to restart the game..." );
+        viruses= [];
+        pills= [];
         const virusesLength = Math.floor(window.innerWidth / 12);
         for (let i = 0; i < virusesLength; i++) {
             viruses.push(new Virus());
-    }
-    }
     
+        }
+      const pillsLength = Math.floor(window.innerWidth / 120);
+        for (let i = 0; i < pillsLength; i++) {
+            pills.push(new Pill());
+        }
+    }
+    if(viruses.length>virusesLength*1.75){
+        alert("COVID-19 has overtaken :(\nDon't destroy the pills!\nPress OK to restart the game..." );
+        viruses=[];
+        pills=[];
+        const virusesLength = Math.floor(window.innerWidth / 12);
+        for (let i = 0; i < virusesLength; i++) {
+            viruses.push(new Virus());
+    
+        }
+      const pillsLength = Math.floor(window.innerWidth / 120);
+        for (let i = 0; i < pillsLength; i++) {
+            pills.push(new Pill());
+        }
+    }
 }
+
 
 class Virus {
     constructor() {
@@ -65,6 +111,10 @@ class Virus {
         this.pos = createVector(random(width), random(height));
         //Velocity
         this.vel = createVector(random(-5,5), random(-2.5,2.5));
+    }
+
+    set position (position){
+        this.pos = position;
     }
 
     // Update movement by adding velocity
@@ -81,10 +131,10 @@ class Virus {
 
     //Detect edges
     edges() {
-        if ( this.pos.x < 0 || this.pos.x+11 > width) {
+        if ( this.pos.x  < 0 || this.pos.x +20 > width) {
             this.vel.x*=-1;
         }
-        if ( this.pos.y < 0 || this.pos.y+15 > height) {
+        if ( this.pos.y  < 0 || this.pos.y +10 > height) {
             this.vel.y*=-1;
         }
     }
@@ -111,4 +161,12 @@ class Virus {
             }
     }  
 
+}
+
+class Pill extends Virus {
+//draw pill
+draw_virus () {
+    //tint(0, 153, 204, 126);
+    image(pill, this.pos.x, this.pos.y, 25, 12);
+}
 }
